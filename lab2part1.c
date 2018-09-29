@@ -77,10 +77,9 @@ void *Thread_work(void* rank) {
     double x, y, distance_squared;
     unsigned seed = my_rank+1;  /* must be nonzero */
 
-    srandom(seed);
     for(toss = start; toss < finish; toss++) {
-        x = (random()*2.0/RAND_MAX) - 1.0;  /* (78) x= random between -1 and 1 */
-        y = (random()*2.0/RAND_MAX) - 1.0;  /* (79) y= random between -1 and 1 */
+        x = (my_drand(&seed)*2.0) - 1.0;    /* (78) x= random between -1 and 1 */
+        y = (my_drand(&seed)*2.0) - 1.0;    /* (79) y= random between -1 and 1 */
         distance_squared = (x*x) + (y*y);   /* (80) distance squared of dart toss from centre */
         if (distance_squared <= 1) {
             /* (82) if dart falls in unit circle, increment the counter local_number_in_circle */
