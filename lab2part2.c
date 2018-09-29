@@ -45,48 +45,48 @@ double f(double x); /* function we're integrating */
 int main(int argc, char** argv) {
     long        i;
     pthread_t*  thread_handles;  
-	
+    
     total = 0.0;
     if (argc != 3) {
-		fprintf(stderr, "usage: %s <number of threads> <method>\n", 
+        fprintf(stderr, "usage: %s <number of threads> <method>\n", 
                       argv[0]);
-		exit(0);
+        exit(0);
     }
     thread_count = strtol(argv[1], NULL, 10);
     method = strtol(argv[2], NULL, 10);
-	
+    
     printf("Enter a, b, n\n");
     scanf("%lf %lf %d", &a, &b, &n);
     h = (b-a)/n;
     local_n = n/thread_count;
-	
+    
     /* Allocate storage for thread handles. */
     thread_handles = malloc (thread_count*sizeof(pthread_t));
-	
+    
     /* Initialize the mutex, semaphore, busy-wait */
     flag = 0;
     pthread_mutex_init(&mutex, NULL);
     sem_init(&sem, 0, 1);
-	
+    
     /* Start the threads. */
     for (i = 0; i < thread_count; i++) {
         /* create thread with attribute thread_handle[i], executing the function Thread_work, with rank i */
     }
-	
+    
     /* Wait for threads to complete. */
     for (i = 0; i < thread_count; i++) {
         /* join corresponding threads */
     }
-	
+    
     printf("With n = %d trapezoids, our estimate\n",
-		   n);
+           n);
     printf("of the integral from %f to %f = %19.15e\n",
-		   a, b, total);
-	
+           a, b, total);
+    
     pthread_mutex_destroy(&mutex);
-	sem_destroy(&sem);
+    sem_destroy(&sem);
     free(thread_handles);
-	
+    
     return 0;
 } /*  main  */
 
@@ -96,47 +96,47 @@ void *Thread_work(void* rank) {
     double      local_b;   /* Right endpoint my thread  */
     double      my_int;    /* Integral over my interval */
     long        my_rank = (long) rank;
-	
+    
     /* Length of each process' interval of integration = */
     /* local_n*h.  So my interval starts at:             */
     local_a = a + my_rank*local_n*h;
     local_b = local_a + local_n*h;
-	
+    
     my_int = Trap(local_a, local_b, local_n, h);
-	
+    
     switch (method) {
         case 2:
-	    /* 
-	    semaphore critical section to add local integral to total
-	    */ 
-	break;
-	case 3:
-	    /* 
-	    busy-wait critical section to add local integral to total
-	    */ 
-	break;
-	default:
-	    /* 
-	    mutex critical section to add local integral to total
-	    */ 
-	    break;
+        /* 
+        semaphore critical section to add local integral to total
+        */ 
+    break;
+    case 3:
+        /* 
+        busy-wait critical section to add local integral to total
+        */ 
+    break;
+    default:
+        /* 
+        mutex critical section to add local integral to total
+        */ 
+        break;
     }
     
     return NULL;
-	
+    
 }  /* Thread_work */
 
 /*--------------------------------------------------------------*/
 double Trap(
-			double  local_a   /* in */,
-			double  local_b   /* in */,
-			int     local_n   /* in */,
-			double  h         /* in */) {
-	
+            double  local_a   /* in */,
+            double  local_b   /* in */,
+            int     local_n   /* in */,
+            double  h         /* in */) {
+    
     double integral;   /* Store result in integral  */
     double x;
     int i;
-	
+    
     integral = (f(local_a) + f(local_b))/2.0;
     x = local_a;
     for (i = 1; i <= local_n-1; i++) {
@@ -151,7 +151,7 @@ double Trap(
 /*--------------------------------------------------------------*/
 double f(double x) {
     double return_val;
-	
+    
     return_val = x*x;
     return return_val;
 } /* f */
