@@ -45,7 +45,7 @@ double f(double x); /* function we're integrating */
 int main(int argc, char** argv) {
     long        i;
     pthread_t*  thread_handles;  
-    
+
     total = 0.0;
     if (argc != 3) {
         fprintf(stderr, "usage: %s <number of threads> <method>\n", argv[0]);
