@@ -21,6 +21,7 @@ const int MAX = 1000;
 
 int thread_count;
 sem_t* sems;
+FILE* filePointer;
 
 char *my_strtok(char* seps, char** next_string_p);
 int separator(char* current, char* seps);
@@ -28,8 +29,27 @@ void *Tokenize(void* rank);  /* Thread function */
 
 /*--------------------------------------------------------------------*/
 int main(int argc, char* argv[]) {
+    // Declare variables
     long        thread;
-    pthread_t*  thread_handles; 
+    pthread_t*  thread_handles;
+    char*       filename;
+
+    // Check input arguments
+    if (argc != 3) {
+        fprintf(stderr, "Error: Incorrect number of arguments. \n");
+        fprintf(stderr, "  1. Number of threads \n  2. Input file \n");
+        return EXIT_FAILURE;
+    }
+
+    // Open File
+    filename = argv[2];
+    filePointer = fopen(filename, "r");
+
+    // Check that file opened
+    if (!filePointer) {
+        fprintf(stderr, "Error: Unable to open file: %s\n", filename);
+        return EXIT_FAILURE;
+    }
 
     thread_count = atoi(argv[1]);
 
@@ -40,7 +60,7 @@ int main(int argc, char* argv[]) {
         sem_init(&sems[thread], 0, 0);
     }
 
-    printf("Enter text\n");
+    // printf("Enter text\n");
     for (thread = 0; thread < thread_count; thread++) {
         // Create threads 0 to thread_count
         pthread_create(&thread_handles[thread], (pthread_attr_t*) NULL, Tokenize, (void*) thread);
@@ -145,7 +165,7 @@ void *Tokenize(void* rank) {
     char *next_string;
 
     /* Have each thread read consecutive lines and tokenize them in turn */
-    fg_rv = fgets(my_line, MAX, stdin);
+    fg_rv = fgets(my_line, MAX, filePointer);
     while (fg_rv != NULL) {
         printf("Thread %ld > my line = %s", my_rank, my_line);
 
