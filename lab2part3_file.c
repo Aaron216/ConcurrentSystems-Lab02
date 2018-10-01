@@ -178,7 +178,7 @@ void *Tokenize(void* rank) {
             free (my_string);
             my_string = my_strtok(" \t\n", &next_string);
         }
-        fg_rv = fgets(my_line, MAX, stdin);
+        fg_rv = fgets(my_line, MAX, filePointer);
     }
 
     return NULL;
