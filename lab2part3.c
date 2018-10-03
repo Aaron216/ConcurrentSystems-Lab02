@@ -145,7 +145,10 @@ void *Tokenize(void* rank) {
     char *next_string;
 
     /* Have each thread read consecutive lines and tokenize them in turn */
+    sem_wait(&sems[my_rank]);                   // Wait for your turn
     fg_rv = fgets(my_line, MAX, stdin);
+    sem_post(&sems[(my_rank+1)%thread_count]);  // Next thread can go
+
     while (fg_rv != NULL) {
         printf("Thread %ld > my line = %s", my_rank, my_line);
 
@@ -158,7 +161,10 @@ void *Tokenize(void* rank) {
             free (my_string);
             my_string = my_strtok(" \t\n", &next_string);
         }
+
+        sem_wait(&sems[my_rank]);                   // Wait for your turn
         fg_rv = fgets(my_line, MAX, stdin);
+        sem_post(&sems[(my_rank+1)%thread_count]);  // Next thread can go
     }
 
     return NULL;
