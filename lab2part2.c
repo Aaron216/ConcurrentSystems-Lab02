@@ -112,9 +112,8 @@ void *Thread_work(void* rank) {
         break;
     case 3:
         /* (114) busy-wait critical section to add local integral to total */
-        while(flag != my_rank) {
-            total += my_int;
-        }
+        while(flag != my_rank) {/* Wait for your turn */}
+        total += my_int;
         flag++;
         break;
     default:
