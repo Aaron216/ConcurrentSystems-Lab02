@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     pthread_mutex_destroy(&the_mutex);  /* Free up the_mutex */
     pthread_cond_destroy(&condc);       /* Free up consumer condition variable */
     pthread_cond_destroy(&condp);       /* Free up producer condition variable */
-    
+
     printf("Final value in buffer = %d\n",buffer); 
     return 0;
 }

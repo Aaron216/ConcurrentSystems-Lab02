@@ -91,10 +91,10 @@ int main(int argc, char** argv) {
 
 /*--------------------------------------------------------------*/
 void *Thread_work(void* rank) {
-    double      local_a;   /* Left endpoint my thread   */
-    double      local_b;   /* Right endpoint my thread  */
-    double      my_int;    /* Integral over my interval */
-    long        my_rank = (long) rank;
+    double  local_a;    /* Left endpoint my thread   */
+    double  local_b;    /* Right endpoint my thread  */
+    double  my_int;     /* Integral over my interval */
+    long    my_rank = (long) rank;
 
     /* Length of each process' interval of integration = */
     /* local_n*h.  So my interval starts at:             */
