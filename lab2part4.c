@@ -13,6 +13,8 @@
 #include <pthread.h>
 
 #define MAX 10000           /* Numbers to produce */
+const int debug = 0;
+
 pthread_mutex_t the_mutex;
 pthread_cond_t condc, condp;
 int buffer = 0;
@@ -49,12 +51,16 @@ void *producer(void* ptr) {
     int i;
 
     for (i = 1; i <= MAX; i++) {
-        pthread_mutex_lock(&the_mutex);
-        while (buffer != 0)
-            pthread_cond_wait(&condp, &the_mutex);
-        buffer = i;
-        pthread_cond_signal(&condc);
-        pthread_mutex_unlock(&the_mutex);
+        pthread_mutex_lock(&the_mutex);             // Lock the mutex
+        while (buffer != 0) {
+            pthread_cond_wait(&condp, &the_mutex);  // Wait for signal
+        }
+        buffer = i;                                 // Set buffer to 1-MAX
+        if (debug) {
+            printf("Producer > buffer = %d \n", buffer);
+        }
+        pthread_cond_signal(&condc);                // Unblock consumer
+        pthread_mutex_unlock(&the_mutex);           // Unlock the mutex
     }
     return NULL;
 }
@@ -63,12 +69,16 @@ void *consumer(void* ptr) {
     int i;
 
     for (i = 1; i <= MAX; i++) {
-        pthread_mutex_lock(&the_mutex);
-        while (buffer == 0)
-            pthread_cond_wait(&condc, &the_mutex);
-        buffer = 0;
-        pthread_cond_signal(&condp);
-        pthread_mutex_unlock(&the_mutex);
+        pthread_mutex_lock(&the_mutex);             // Lock the mutex
+        while (buffer == 0) {
+            pthread_cond_wait(&condc, &the_mutex);  // Wait for signal
+        }
+        buffer = 0;                                 // Set buffer to 0
+        if (debug) {
+            printf("Consumer > buffer = %d \n", buffer);
+        }
+        pthread_cond_signal(&condp);                // Unblock producer
+        pthread_mutex_unlock(&the_mutex);           // Unlock the mutex
     }
     return NULL;
 }
